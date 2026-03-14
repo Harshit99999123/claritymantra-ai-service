@@ -1,0 +1,6 @@
+{
+  "collection_name": "gita_chunks",
+  "embedding_provider": "sentence-transformers",
+  "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+  "record_count": 653
+}

@@ -1,0 +1,85 @@
+[
+  {
+    "chunk_id": "2_47",
+    "chapter": 2,
+    "verse": 47,
+    "sanskrit": "कर्मण्येवाधिकारस्ते मा फलेषु कदाचन",
+    "translation": "You have a right to perform your prescribed duties, but you are not entitled to the fruits of your actions.",
+    "meaning": "Krishna teaches Arjuna to focus on sincere action and duty instead of becoming trapped by anxiety about outcomes.",
+    "themes": ["duty", "karma yoga", "detachment", "action", "career"],
+    "emotions": ["confusion", "anxiety", "uncertainty", "pressure"]
+  },
+  {
+    "chunk_id": "2_48",
+    "chapter": 2,
+    "verse": 48,
+    "sanskrit": "योगस्थः कुरु कर्माणि सङ्गं त्यक्त्वा धनञ्जय",
+    "translation": "Perform your duty steadily, abandoning attachment, and remain balanced in success and failure.",
+    "meaning": "Inner steadiness matters more than external results. Peace comes when action is performed with balance.",
+    "themes": ["equanimity", "detachment", "duty", "balance"],
+    "emotions": ["stress", "fear", "restlessness", "anxiety"]
+  },
+  {
+    "chunk_id": "3_19",
+    "chapter": 3,
+    "verse": 19,
+    "translation": "Therefore, without attachment, one should always perform the work that must be done.",
+    "meaning": "Right action should continue even when the mind is uncertain. Discipline and responsibility bring clarity.",
+    "themes": ["action", "discipline", "responsibility", "duty", "career"],
+    "emotions": ["confusion", "stuck", "indecision", "pressure"]
+  },
+  {
+    "chunk_id": "4_13",
+    "chapter": 4,
+    "verse": 13,
+    "translation": "The divisions of human work are created according to qualities and actions.",
+    "meaning": "Purpose and responsibility are understood through one's nature and actions, not only through status or external comparison.",
+    "themes": ["purpose", "work", "nature", "duty", "identity"],
+    "emotions": ["confusion", "purpose", "future", "comparison"]
+  },
+  {
+    "chunk_id": "6_5",
+    "chapter": 6,
+    "verse": 5,
+    "translation": "One must elevate oneself by the mind, not degrade oneself. The mind can be friend and enemy.",
+    "meaning": "How the mind is trained determines whether a person moves toward clarity or deeper distress.",
+    "themes": ["mind", "self-discipline", "clarity", "growth"],
+    "emotions": ["overthinking", "anxiety", "self-doubt", "restlessness"]
+  },
+  {
+    "chunk_id": "6_26",
+    "chapter": 6,
+    "verse": 26,
+    "translation": "From wherever the restless mind wanders, one should bring it back under the control of the self.",
+    "meaning": "Mental wandering is natural, but reflection requires gently returning attention to what matters.",
+    "themes": ["mind", "focus", "discipline", "reflection"],
+    "emotions": ["overthinking", "stress", "restlessness", "distraction"]
+  },
+  {
+    "chunk_id": "12_15",
+    "chapter": 12,
+    "verse": 15,
+    "translation": "One who is not disturbed by the world and who does not disturb the world is dear to the Lord.",
+    "meaning": "Emotional steadiness comes from learning not to be ruled by constant agitation and reaction.",
+    "themes": ["calm", "steadiness", "relationships", "self-control"],
+    "emotions": ["conflict", "stress", "anger", "relationship"]
+  },
+  {
+    "chunk_id": "18_14",
+    "chapter": 18,
+    "verse": 14,
+    "translation": "There are many factors behind every action, not only the isolated self.",
+    "meaning": "Not every outcome is under personal control. Clear thinking includes humility about what can and cannot be controlled.",
+    "themes": ["control", "humility", "action", "detachment"],
+    "emotions": ["guilt", "pressure", "uncertainty", "fear"]
+  },
+  {
+    "chunk_id": "18_47",
+    "chapter": 18,
+    "verse": 47,
+    "translation": "It is better to perform one's own duty imperfectly than to perform another's duty perfectly.",
+    "meaning": "A meaningful life comes from living one's own path sincerely rather than living by comparison or imitation.",
+    "themes": ["duty", "identity", "purpose", "career", "authenticity"],
+    "emotions": ["comparison", "career", "confusion", "future"]
+  }
+]

@@ -5,6 +5,7 @@ __pycache__/
 *.py[cod]
 .DS_Store
 .env
+.env.example
 .idea/
 .mypy_cache/
 .ruff_cache/

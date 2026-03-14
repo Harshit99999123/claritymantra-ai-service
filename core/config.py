@@ -19,7 +19,19 @@ class Settings(BaseSettings):
     log_level: str
     ollama_base_url: AnyHttpUrl
     ollama_model: str
+    ollama_keep_alive: str
+    chat_temperature: float
+    chat_max_tokens: int
+    enable_query_rewrite: bool
+    query_rewrite_model: str
+    query_rewrite_max_tokens: int
+    embedding_provider: str
     embedding_model: str
+    vector_store_provider: str
+    active_book_slug: str
+    retrieval_top_k: int
+    retrieval_context_token_limit: int
+    retrieval_candidate_pool: int
     vector_store_path: str
 
 

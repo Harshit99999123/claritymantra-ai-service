@@ -1,0 +1,7 @@
+{
+  "collection_name": "knowledge_chunks",
+  "embedding_provider": "sentence-transformers",
+  "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+  "record_count": 653,
+  "active_book_slug": "bhagavad_gita_as_it_is"
+}

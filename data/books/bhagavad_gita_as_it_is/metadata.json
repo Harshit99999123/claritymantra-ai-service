@@ -1,0 +1,9 @@
+{
+  "book_slug": "bhagavad_gita_as_it_is",
+  "title": "Bhagavad Gita As It Is",
+  "source_document_path": "data-resources/hindu/Bhagavad-gita-As-It-Is.pdf",
+  "structured_source_path": "data-resources/hindu/bhagavad_gita_as_it_is.seed.json",
+  "generated_at": "2026-03-14T21:52:10.793949+00:00",
+  "records_written": 653,
+  "refresh_active_index": true
+}

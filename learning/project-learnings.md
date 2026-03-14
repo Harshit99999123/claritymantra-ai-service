@@ -80,9 +80,70 @@
   - `source .venv/bin/activate`
   - `uvicorn main:app --reload`
 
+### RAG and retrieval decisions
+- Retrieval is verse-based, not arbitrary token chunking.
+- Each knowledge chunk should preserve a full philosophical unit:
+  - chapter
+  - verse
+  - translation
+  - meaning
+  - themes
+  - emotions
+- Retrieval should not rely only on raw semantic similarity.
+- Current retriever uses a hybrid score across:
+  - semantic text similarity
+  - lexical overlap
+  - theme overlap
+  - emotion overlap
+- Retrieval now uses a persistent ChromaDB candidate store and reranks candidate results with the hybrid score.
+- Prompt construction now includes retrieved verse translation, meaning, themes, and emotions.
+- Context is trimmed by a token budget so retrieved material remains bounded before generation.
+- Current generated dataset path for the active Bhagavad Gita book is `data/books/bhagavad_gita_as_it_is/dataset.json`.
+- Ingestion now has a book-specific structured source at `data-resources/hindu/bhagavad_gita_as_it_is.seed.json`.
+- Generated outputs live under `data/books/<book_slug>/`, which allows rerunning one book without touching others.
+- The vector index now persists at `data/vector_store/`.
+- Embeddings are provider-based:
+  - deterministic mode for lightweight local execution
+  - sentence-transformers mode for richer semantic retrieval
+- `.env` now uses sentence-transformers embeddings and an active source slug for the live setup.
+- `.env.example` mirrors the same source-driven retrieval contract.
+
+### Ingestion design decisions
+- Ingestion is exposed through API endpoints, not a CLI.
+- Configured books can be listed through `/ingestion/books`.
+- A specific book can be rerun through `/ingestion/run`.
+- The ingestion pipeline is generic at the registry and book-adapter level:
+  - each book has a registry definition
+  - each book can have its own ingestor implementation
+  - each book writes to its own dataset and metadata paths
+- When an ingested book is marked as active for retrieval, rerunning ingestion also refreshes the in-memory retrieval index.
+- The Bhagavad Gita ingestor now parses the PDF directly using chapter page boundaries and verse block detection.
+- JSON overrides are applied after parsing so data quality improvements can be made for specific verses without replacing the parser.
+- Combined verse blocks such as `TEXTS 1-2` are preserved as a single chunk with `verse_label`.
+
 ### Process learnings
 - `pypdf` had to be installed locally to extract the PRD and source PDF text.
 - Requirement from user: do not assume details not stated in the PRD; ask when unclear.
 - Requirement from user: changes should be approved before implementation.
 - Initial nested `ai_service/` package layout was rejected because the repo itself should be the AI service, not a wrapper project containing one.
 - IDE/runtime errors around `fastapi` were caused by the wrong interpreter selection, not by the code itself.
+- The AI service should stay scoped to AI responsibilities only: ingestion, retrieval, prompt construction, and model generation. Backend persistence and application workflow ownership should remain outside this repo.
+- The active knowledge source should be selected by `ACTIVE_BOOK_SLUG`, not by a hardcoded dataset path.
+- The core retrieval model should be generic (`KnowledgeSource`, `KnowledgeChunk`) so new books can be added without renaming the service domain model each time.
+- Source-specific parsers can still exist, but they should emit the same generic chunk model.
+- Prompt tone needs to be explicitly constrained. A calm product voice does not emerge automatically from RAG; it has to be enforced in the system prompt and fallback responses.
+- Useful tone constraints for this product:
+  - calm and respectful
+  - modern language, not devotional language
+  - reflective, not preachy
+  - short and readable
+  - end with one gentle next step or question
+- The model should reference teachings naturally rather than sounding like it is reciting scripture verbatim.
+- Ollama generation is part of the AI service boundary, but it needs a safe fallback path so `/ai/chat` continues working when the local model runtime is unavailable.
+- Retrieval quality improves when noisy user input is rewritten before embedding.
+- Query rewrite should happen before retrieval, not before final answer generation.
+- The rewritten query should preserve meaning and emotional signal, but the final model should still answer the original user message.
+- Query rewrite should be optional and config-driven so it can be disabled if it starts over-normalizing user intent.
+- Splitting rewrite and generation models is useful for latency control. A smaller model can clean the query while a stronger model handles the final mentor response.
+- Streaming matters even when total generation time is still noticeable. Returning token chunks through SSE makes the product feel much faster and closer to a ChatGPT-style experience.
+- `OLLAMA_KEEP_ALIVE` helps reduce repeated cold-start latency for local model inference.
