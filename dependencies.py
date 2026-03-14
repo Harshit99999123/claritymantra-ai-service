@@ -14,6 +14,7 @@ from services.health_service import HealthService
 from services.ingestion_service import IngestionService
 from services.insight_service import InsightService
 from services.query_rewrite_service import QueryRewriteService
+from services.source_quote_service import SourceQuoteService
 from services.speech_service import SpeechService
 
 
@@ -79,7 +80,16 @@ def build_container(settings: Settings) -> ServiceContainer:
         keep_alive=settings.ollama_keep_alive,
         chat_temperature=settings.chat_temperature,
         chat_max_tokens=settings.chat_max_tokens,
+        insight_model=settings.insight_model,
+        insight_max_tokens=settings.insight_max_tokens,
+        source_quote_format_model=settings.source_quote_format_model,
+        source_quote_format_max_tokens=settings.source_quote_format_max_tokens,
         query_rewrite_max_tokens=settings.query_rewrite_max_tokens,
+    )
+    source_quote_service = SourceQuoteService(
+        llm_client=llm_client,
+        enabled=settings.enable_source_quote_formatting,
+        cache_path=settings.source_quote_format_cache_path,
     )
     query_rewrite_service = QueryRewriteService(
         llm_client=llm_client,
@@ -94,7 +104,12 @@ def build_container(settings: Settings) -> ServiceContainer:
             llm_client=llm_client,
             query_rewrite_service=query_rewrite_service,
         ),
-        ingestion_service=IngestionService(settings=settings, vector_store=vector_store, embeddings=embeddings),
+        ingestion_service=IngestionService(
+            settings=settings,
+            vector_store=vector_store,
+            embeddings=embeddings,
+            source_quote_service=source_quote_service,
+        ),
         insight_service=InsightService(
             retriever=retriever,
             llm_client=llm_client,

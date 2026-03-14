@@ -11,3 +11,4 @@ class InsightResponse(BaseModel):
     quote: str
     meaning: str
     reflection: str
+    shloka: str | None = None

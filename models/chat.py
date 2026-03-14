@@ -1,7 +1,12 @@
 from pydantic import BaseModel, Field
 
 from models.common import ConversationMessage
-from models.knowledge import RetrievedKnowledgeChunk
+
+
+class ChatVerse(BaseModel):
+    reference: str
+    translation: str
+    themes: list[str] = Field(default_factory=list)
 
 
 class ChatRequest(BaseModel):
@@ -10,6 +15,6 @@ class ChatRequest(BaseModel):
 
 
 class ChatResponse(BaseModel):
-    response: str
-    verses: list[RetrievedKnowledgeChunk] = Field(default_factory=list)
-    retrieval_query: str | None = None
+    reflection: str
+    reflection_question: str
+    verses: list[ChatVerse] = Field(default_factory=list)

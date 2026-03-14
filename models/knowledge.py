@@ -39,6 +39,7 @@ class RetrievedKnowledgeChunk(BaseModel):
     chapter: int | None = None
     verse: int | None = None
     verse_label: str | None = None
+    original_text: str = ""
     translation: str
     interpretation: str
     themes: list[str] = Field(default_factory=list)

@@ -17,11 +17,10 @@ async def chat(request: Request, payload: ChatRequest) -> ChatResponse:
 @router.post("/chat/stream")
 async def chat_stream(request: Request, payload: ChatRequest) -> StreamingResponse:
     service = request.app.state.container.chat_service
-    retrieval_query, verses, stream = await service.stream_response(payload)
+    verses, stream = await service.stream_response(payload)
 
     async def event_stream():
         meta = {
-            "retrieval_query": retrieval_query,
             "references": [
                 {
                     "source": item.source.title,

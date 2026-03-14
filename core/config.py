@@ -22,6 +22,12 @@ class Settings(BaseSettings):
     ollama_keep_alive: str
     chat_temperature: float
     chat_max_tokens: int
+    insight_model: str
+    insight_max_tokens: int
+    enable_source_quote_formatting: bool
+    source_quote_format_model: str
+    source_quote_format_max_tokens: int
+    source_quote_format_cache_path: str
     enable_query_rewrite: bool
     query_rewrite_model: str
     query_rewrite_max_tokens: int

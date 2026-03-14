@@ -31,6 +31,8 @@ CHAPTER_START_PAGES = {
 
 ART_SECTION_START_PAGE = 903
 TEXT_HEADER_PATTERN = re.compile(r"(?=(?:^|\n)TEXTS?\s+(\d+)(?:[–-](\d+))?)", re.MULTILINE)
+LATIN_TEXT_PATTERN = re.compile(r"[A-Za-zÀ-ž]")
+DISALLOWED_SOURCE_CHARS = re.compile(r"[\[\]<>\\_=+*^@#%&|~]")
 
 THEME_KEYWORDS = {
     "duty": {"duty", "duties", "responsibility", "obligation", "role"},
@@ -106,6 +108,7 @@ def parse_verse_block(chapter: int, block: str, source: KnowledgeSource) -> Know
     verse_label = f"{verse_start}-{verse_end}" if verse_end else str(verse_start)
     chunk_id = f"{chapter}_{verse_label.replace('-', '_')}"
 
+    original_text = extract_original_text(block)
     translation = extract_section(block, "TRANSLATION", ["PURPORT"])
     if not translation:
         return None
@@ -123,11 +126,71 @@ def parse_verse_block(chapter: int, block: str, source: KnowledgeSource) -> Know
         chapter=chapter,
         verse=verse_start,
         verse_label=verse_label if verse_end else None,
+        original_text=normalize_whitespace(original_text),
         translation=normalize_whitespace(translation),
         interpretation=meaning,
         themes=themes,
         emotions=emotions,
     )
+
+
+def extract_original_text(block: str) -> str:
+    header_match = re.search(r"TEXTS?\s+\d+(?:[–-]\d+)?\s*", block)
+    translation_match = re.search(r"\nTRANSLATION\s*", block)
+    if not header_match or not translation_match:
+        return ""
+    raw_text = block[header_match.end():translation_match.start()].strip()
+    lines = [line.strip() for line in raw_text.splitlines() if line.strip()]
+    selected: list[str] = []
+    for line in lines:
+        candidate = extract_transliteration_segment(line)
+        if not candidate:
+            continue
+        if ";" in candidate:
+            candidate = candidate.split(";", 1)[0].strip()
+        candidate = strip_verse_numbering(candidate)
+        if is_clean_transliteration(candidate):
+            selected.append(candidate)
+        if len(selected) >= 4:
+            break
+    return normalize_whitespace(" ".join(selected).strip())
+
+
+def extract_transliteration_segment(line: str) -> str:
+    if "—" in line or ";" in line:
+        return ""
+    if "))" in line:
+        suffix = line.rsplit("))", 1)[-1].strip()
+        if suffix and LATIN_TEXT_PATTERN.search(suffix):
+            return suffix
+    return line.strip()
+
+
+def strip_verse_numbering(text: str) -> str:
+    cleaned = re.sub(r"\)\)\s*\d+\s*\)\)", "", text)
+    cleaned = re.sub(r"^\d+[\).\s-]+", "", cleaned)
+    return cleaned.strip(" -")
+
+
+def is_clean_transliteration(text: str) -> bool:
+    if not text:
+        return False
+    if DISALLOWED_SOURCE_CHARS.search(text):
+        return False
+    if "—" in text or ";" in text:
+        return False
+    if re.search(r"\d", text):
+        return False
+    if not LATIN_TEXT_PATTERN.search(text):
+        return False
+    lowered_letters = sum(char.islower() for char in text)
+    uppercase_letters = sum(char.isupper() for char in text)
+    if uppercase_letters > lowered_letters:
+        return False
+    invalid_chars = [char for char in text if not (char.isalpha() or char in " -'’,.;:!?()")]
+    if invalid_chars:
+        return False
+    return len(text.split()) >= 2
 
 
 def extract_section(block: str, section_name: str, stop_names: list[str]) -> str:

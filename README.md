@@ -167,19 +167,35 @@ curl -X POST http://127.0.0.1:8000/ingestion/run \
 
 ## Response Style
 - Chat responses are tuned to sound calm, polite, modern, and reflective.
-- The mentor should acknowledge emotion, introduce a grounded perspective, connect it to a retrieved teaching, and end with a gentle reflection or next step.
+- The mentor acknowledges emotion, introduces a grounded perspective, connects it to a retrieved teaching, explains it briefly, and ends with a gentle reflection question.
 - The model is explicitly instructed not to preach, moralize, impersonate Krishna, or sound like a raw scripture recitation.
-- Retrieved teachings should be interpreted in contemporary language rather than copied literally for long stretches.
+- Retrieved teachings are interpreted in contemporary language rather than copied literally for long stretches.
+
+## Response Format
+- `/ai/chat` now returns a structured payload that separates the reflection, the reflection question, and the top 2 verses.
+- Example:
+```json
+{
+  "reflection": "Arjuna once felt the same longing ...",
+  "reflection_question": "What small step could help you move forward today?",
+  "verses": [
+    {
+      "reference": "2.8",
+      "translation": "I can find no means to drive away this grief...",
+      "themes": ["grief", "detachment"]
+    }
+  ]
+}
+```
+This makes the frontend rendering simpler and avoids parsing metadata out of the text.
 
 ## Query Rewrite
-- Before retrieval, the AI service can rewrite messy or error-filled user input into a cleaner retrieval query.
-- The rewritten query is used only for retrieval quality.
-- The original user message is still used for the final response generation.
+- Before retrieval, the AI service rewrites messy or error-filled user input into a cleaner retrieval query.
+- The rewritten query is used only for similarity search; the final reflection still answers the original user message.
 - This helps when user input contains spelling mistakes, fragmented phrasing, or shorthand.
 - The feature is controlled by:
   - `ENABLE_QUERY_REWRITE`
   - `QUERY_REWRITE_MODEL`
-- Chat and retrieve responses now include `retrieval_query` so the rewritten query can be inspected.
 
 Example:
 - user message: `i dnt knw wht to do in my life evrything is mess`
@@ -207,9 +223,8 @@ ollama list
   - `token`
   - `done`
 
-The `meta` event includes:
-- `retrieval_query`
-- retrieved verses
+The `meta` event includes only:
+  - retrieved verse references
 
 The `token` event includes incremental text chunks, which allows a ChatGPT-like streaming UX.
 

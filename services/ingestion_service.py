@@ -10,10 +10,11 @@ from models.knowledge import KnowledgeChunk
 
 
 class IngestionService:
-    def __init__(self, settings, vector_store, embeddings) -> None:
+    def __init__(self, settings, vector_store, embeddings, source_quote_service) -> None:
         self.settings = settings
         self.vector_store = vector_store
         self.embeddings = embeddings
+        self.source_quote_service = source_quote_service
         self.logger = get_logger(__name__)
 
     def list_books(self) -> list[IngestionBookResponse]:
@@ -33,6 +34,7 @@ class IngestionService:
         definition = get_book_definition(book_slug)
         ingestor = build_ingestor(definition)
         chunks = ingestor.ingest(definition)
+        chunks = await self.source_quote_service.format_chunks(chunks)
         self._write_outputs(definition.output_dataset_path, definition.output_metadata_path, definition, chunks)
 
         refreshed = False
